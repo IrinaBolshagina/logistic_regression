@@ -1,4 +1,5 @@
 import pandas as pd
+import sys
 
 # Remove NaN and not numeric values
 def clean_nan(lst):
@@ -72,7 +73,8 @@ def describe(features):
     return describe
 
 if __name__ == '__main__':
-    df = pd.read_csv('datasets/dataset_train.csv')
+    dataset = sys.argv[1]
+    df = pd.read_csv(dataset)
     features = df[["Arithmancy", "Astronomy", "Herbology", "Defense Against the Dark Arts", 
                    "Divination", "Muggle Studies", "Ancient Runes", "History of Magic", 
                    "Transfiguration", "Potions", "Care of Magical Creatures", "Charms", "Flying"]]
