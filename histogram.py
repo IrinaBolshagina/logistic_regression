@@ -11,14 +11,19 @@ if __name__ == '__main__':
     except OSError as err:
         print("OS error: {0}".format(err))
     else:
-        features1 = ['Index', 'Hogwarts House', 'First Name', 'Last Name',
+        features = ['Index', 'Hogwarts House', 'First Name', 'Last Name',
                         'Birthday', 'Best Hand', 'Arithmancy', 'Astronomy', 'Herbology',
                         'Defense Against the Dark Arts', 'Divination', 'Muggle Studies',
                         'Ancient Runes', 'History of Magic', 'Transfiguration', 'Potions',
                         'Care of Magical Creatures', 'Charms', 'Flying']
-        categorical = ['Hogwarts House']
-        features = ['Transfiguration']
+        numeric_features = ['Arithmancy', 'Astronomy', 'Herbology',
+                        'Defense Against the Dark Arts', 'Divination', 'Muggle Studies',
+                        'Ancient Runes', 'History of Magic', 'Transfiguration', 'Potions',
+                        'Care of Magical Creatures', 'Charms', 'Flying']
 
-        print(df)
-        sns.histplot(data=df, x='History of Magic', hue='Hogwarts House', element = 'step')
-        plt.show()
+        # print(df)
+        # sns.histplot(data=df, x='History of Magic', hue='Hogwarts House', element = 'step')
+        # plt.show()
+        for m in numeric_features:
+            sns.histplot(data=df, x=m, hue='Hogwarts House', element='step')
+            plt.show()
