@@ -10,11 +10,21 @@ if __name__ == '__main__':
     except OSError as err:
         print("OS error: {0}".format(err))
     else:
-        features1 = ['Index', 'Hogwarts House', 'First Name', 'Last Name',
+        features = ['Index', 'Hogwarts House', 'First Name', 'Last Name',
                         'Birthday', 'Best Hand', 'Arithmancy', 'Astronomy', 'Herbology',
                         'Defense Against the Dark Arts', 'Divination', 'Muggle Studies',
                         'Ancient Runes', 'History of Magic', 'Transfiguration', 'Potions',
                         'Care of Magical Creatures', 'Charms', 'Flying']
 
-        sns.scatterplot(data=df, x='Charms', y='Care of Magical Creatures', hue = 'Hogwarts House')
-        plt.show()
+        # sns.scatterplot(data=df, x='Charms', y='Care of Magical Creatures', hue = 'Hogwarts House')
+        # plt.show()
+
+        numeric_features = ['Arithmancy', 'Astronomy', 'Herbology',
+                        'Defense Against the Dark Arts', 'Divination', 'Muggle Studies',
+                        'Ancient Runes', 'History of Magic', 'Transfiguration', 'Potions',
+                        'Care of Magical Creatures', 'Charms', 'Flying']
+
+        for m in numeric_features:
+            for n in numeric_features:
+                sns.scatterplot(data=df, x=n, y=m, hue = 'Hogwarts House')
+                plt.show()
