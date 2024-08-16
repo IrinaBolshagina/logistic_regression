@@ -1,5 +1,25 @@
 import pandas as pd
 import sys
+# descruibe.py is a program that computes the following statistics for each feature in the dataset:
+# - count - number of non-NA/null observations
+# - mean - average value of the dataset
+# - standard deviation - shows how much variation from the mean exists
+# - minimum value 
+# - 25th percentile - value below which 25% of the observations fall
+# - 50th percentile - median value of the dataset - value below which 50% of the observations fall
+# - 75th percentile - value below which 75% of the observations fall
+# - maximum value 
+# Bonus features:
+# - Duplicate Count - number of duplicate values in a dataset
+# - Z-score - measure of how many standard deviations an element is from the mean - to check for outliers
+# - Unique Count - number of unique values in a dataset
+# - Mode - most frequent value in a dataset
+# - Skewness - measure of the asymmetry of the probability distribution of a real-valued random variable about its mean
+# - Range - difference between the maximum and minimum values
+
+# The program should be run as follows:
+# python describe.py datasets/dataset_train.csv
+
 
 # Remove NaN and not numeric values
 def clean_nan(lst):
@@ -84,5 +104,5 @@ if __name__ == '__main__':
     print(describe(features))
     
     # to check with pandas describe function
-    # print(features.describe()) 
+    print(features.describe()) 
 
