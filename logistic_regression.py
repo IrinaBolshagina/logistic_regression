@@ -7,7 +7,6 @@ class LogisticRegression:
     def __init__(self, learning_rate=0.01, epochs=5000, theta = None):
         self.learning_rate = learning_rate
         self.epochs = epochs
-        self.theta = theta
 
     # add a column of ones to the input matrix
     def add_ones(self, X):
@@ -31,10 +30,9 @@ class LogisticRegression:
         return -1/len(y) * sum(logloss1 + logloss0)
 
     # gradient descent
-    def gradient(self, X, theta, y):
-        y_pred = self.sigmoide(np.dot(X, theta))  # check format that is returned
+    def gradient(self, X, y, theta):
+        y_pred = self.sigmoide(np.dot(X, theta))
         grad = np.dot(X.T, (y_pred - y)) / len(y)
-        # print(type(grad))
         return grad
     
     # train the model
@@ -42,16 +40,16 @@ class LogisticRegression:
         self.add_ones(X)
         theta_new = np.zeros(X.shape[1])
         weight0, weight1 = self.get_weights(y)
-        for _ in range(self.epochs):
+        for epoch in range(self.epochs):
             theta = theta_new
             # shift to the negative side of the gradient
-            theta_new = theta - self.learning_rate * self.gradient(X, theta, y)
+            theta_new = theta - self.learning_rate * self.gradient(X, y, theta)
             # stop if the change is too small
             if np.linalg.norm(theta_new - theta) < 1e-5:
                 break
             # visualization of the loss function
-            if _ % 700 == 0:
-                print(f'epoch: {_}')
+            if epoch % 1000 == 0:
+                print(f'epoch: {epoch}')
                 y_pred = self.sigmoide(np.dot(X, theta))
                 print(f'loss: {self.logloss(y, y_pred, weight0, weight1)}')
                 y_class = [1 if i > 0.5 else 0 for i in y_pred]
@@ -61,8 +59,7 @@ class LogisticRegression:
                 print(f'accuracy: {accuracy}')
                 print('theta:', theta)
                 print()
-        self.theta = theta_new
-        return self.theta
+        return theta_new
 
 
     # predict the probability of the input being in class 1

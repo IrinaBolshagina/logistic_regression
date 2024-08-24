@@ -16,9 +16,8 @@ def write_thetas(thetas, house, file):
     df[house] = thetas
     df.to_csv(file, index=False)
 
-# def train_each_house(X, y, model, file, houses):
-    
 
+    
 
 
 if __name__ == "__main__":
@@ -35,26 +34,19 @@ if __name__ == "__main__":
     model = LogisticRegression()
     
     
-    # y = set_y(y, 'Hufflepuff')
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y)
-    # thetas = model.train(X_train, y_train)
-    # create_theta_file()
-    # write_thetas(thetas, 'Hufflepuff')
 
-    # y_pred = model.predict_prob(X_test)
-    # print(y_pred)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y)
+    X_test.to_csv("X_test.csv", index=False)
+    y_test.to_csv("y_test.csv", index=False)
 
-    # y_class = [1 if i > 0.5 else 0 for i in y_pred]
-    # print(y_class)
-
-    # accuracy = sum(y_class == y_test) / len(y_test)
-    # print(accuracy)
 
     file = "thetas.csv"
     create_theta_file(houses, file)
     for house in houses:
         print('\n', house, '\n')
-        y_house = set_y(y, house)
-        X_train, X_test, y_train, y_test = train_test_split(X, y_house, test_size=0.2, stratify=y_house)
-        thetas = model.train(X_train, y_train)
+        y_house = set_y(y_train, house)
+        thetas = model.train(X_train, y_house)
+        # y_house = set_y(y, house)
+        # X_train, X_test, y_train, y_test = train_test_split(X, y_house, test_size=0.2, stratify=y_house)
+        # thetas = model.train(X_train, y_train)
         write_thetas(thetas, house, file)

@@ -54,7 +54,11 @@ def ft_mean(lst):
     return sum_lst / len(lst)
 
 # Standard deviation of the list
+# measure of how much variation from the mean exists
 def ft_std(lst):
+    sum_lst = 0
+    for i in lst:
+        sum_lst += i
     return (sum([(x - ft_mean(lst)) ** 2 for x in lst]) / len(lst)) ** 0.5
 
 # Percentile score
@@ -101,8 +105,9 @@ if __name__ == '__main__':
     labels = ["Feature " + str(i+1) for i in range(len(features.columns))] 
     features.columns = labels
     
+    pd.set_option('display.max_rows', None)
     print(describe(features))
     
     # to check with pandas describe function
-    print(features.describe()) 
+    # print(features.describe()) 
 
