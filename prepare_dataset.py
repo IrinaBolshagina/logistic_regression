@@ -40,7 +40,8 @@ def prepare_dataset(df):
     df = df.drop_duplicates()
 
     # Delete features that are not useful
-    df = df.drop(columns = ["Feature 4", "Feature 11"])
+    df = df.drop(columns = ["Feature 1", "Feature 4", "Feature 11"])
+    # df = df[['House', 'Feature 5', 'Feature 12',]]
 
     # remove nan values from everywhere but the house column
     df = df.dropna(subset=df.columns[1:])

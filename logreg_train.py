@@ -26,14 +26,12 @@ if __name__ == "__main__":
     df = pd.read_csv(dataset)
     df = prepare_dataset(df)
     houses = df["House"].unique()
-    print(houses)
+    # houses = ['Slytherin', 'Ravenclaw', 'Gryffindor', 'Hufflepuff']
 
     X = df.iloc[:, 1:]
     y = df.iloc[:, 0]
 
     model = LogisticRegression()
-    
-    
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y)
     X_test.to_csv("X_test.csv", index=False)
@@ -46,7 +44,4 @@ if __name__ == "__main__":
         print('\n', house, '\n')
         y_house = set_y(y_train, house)
         thetas = model.train(X_train, y_house)
-        # y_house = set_y(y, house)
-        # X_train, X_test, y_train, y_test = train_test_split(X, y_house, test_size=0.2, stratify=y_house)
-        # thetas = model.train(X_train, y_train)
         write_thetas(thetas, house, file)

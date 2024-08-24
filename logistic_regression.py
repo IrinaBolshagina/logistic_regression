@@ -11,22 +11,16 @@ class LogisticRegression:
     # add a column of ones to the input matrix
     def add_ones(self, X):
         return(np.insert(X, 0, 1, axis=1))
-    
-    # calculate weights for classes 0 and 1
-    def get_weights(self, y):
-        weight0 = len(y[y == 0])/ len(y)
-        weight1 = len(y[y == 1])/ len(y)
-        return (weight0, weight1)
 
     # predict function
     def sigmoide(self, z):
         return 1 / (1 + np.exp(-z))
     
-    # loss function with weights
-    def logloss(self, y, y_pred, w0 = 1, w1 = 1):
+    # loss function with logarithms
+    def logloss(self, y, y_pred):
         epsilon = 1e-15     # to avoid log(0)
-        logloss1 =  y * np.log(y_pred + epsilon) * w1 
-        logloss0 = (1 - y) * np.log(1 - y_pred + epsilon) * w0
+        logloss1 =  y * np.log(y_pred + epsilon)
+        logloss0 = (1 - y) * np.log(1 - y_pred + epsilon)
         return -1/len(y) * sum(logloss1 + logloss0)
 
     # gradient descent
@@ -37,21 +31,20 @@ class LogisticRegression:
     
     # train the model
     def train(self, X, y):
-        self.add_ones(X)
-        theta_new = np.zeros(X.shape[1])
-        weight0, weight1 = self.get_weights(y)
+        X = self.add_ones(X)  # Add this line to update X with the column of ones
+        theta = np.zeros(X.shape[1])
         for epoch in range(self.epochs):
-            theta = theta_new
+            theta_tmp = self.learning_rate * self.gradient(X, y, theta)
             # shift to the negative side of the gradient
-            theta_new = theta - self.learning_rate * self.gradient(X, y, theta)
+            theta = theta - theta_tmp
             # stop if the change is too small
-            if np.linalg.norm(theta_new - theta) < 1e-5:
+            if np.linalg.norm(theta) < 1e-5:
                 break
             # visualization of the loss function
             if epoch % 1000 == 0:
                 print(f'epoch: {epoch}')
                 y_pred = self.sigmoide(np.dot(X, theta))
-                print(f'loss: {self.logloss(y, y_pred, weight0, weight1)}')
+                print(f'loss: {self.logloss(y, y_pred)}')
                 y_class = [1 if i > 0.5 else 0 for i in y_pred]
                 # print('y_class:', y_class)
                 accuracy = sum(y_class == y) / len(y)
@@ -59,12 +52,41 @@ class LogisticRegression:
                 print(f'accuracy: {accuracy}')
                 print('theta:', theta)
                 print()
-        return theta_new
+        return theta
+    
+    # stochastic gradient descent for one sample
+    def stochastic_gradient(self, x, yi, theta):
+        y_pred = self.sigmoide(np.dot(x, theta))
+        grad = np.dot(x, (y_pred - yi))
+        return grad
+    
+    def stochastic_train(self, x, y):
+        pd.concat([pd.Series([1])], x)
+        theta = np.zeros(len(x))
+        for epoch in range(self.epochs):
+            theta_tmp = self.learning_rate * self.gradient(x, y, theta)
+            theta = theta - theta_tmp
+            if np.linalg.norm(theta) < 1e-5:
+                break
+
+            if epoch % 1000 == 0:
+                print(f'epoch: {epoch}')
+                y_pred = self.sigmoide(np.dot(x, theta))
+                print(f'loss: {self.logloss(y, y_pred)}')
+                y_class = [1 if i > 0.5 else 0 for i in y_pred]
+                # print('y_class:', y_class)
+                accuracy = sum(y_class == y) / len(y)
+                # print('sum:', sum(y_class == y), 'len:', len(y))
+                print(f'accuracy: {accuracy}')
+                print('theta:', theta)
+                print()
+
+        return theta
 
 
     # predict the probability of the input being in class 1
     def predict_prob(self, X, theta):
-        self.add_ones(X)
+        X = self.add_ones(X)  # Add this line to update X with the column of ones
         return self.sigmoide(np.dot(X, theta))
 
     # Write thetas to a file
