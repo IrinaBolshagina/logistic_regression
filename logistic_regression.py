@@ -73,7 +73,7 @@ class LogisticRegression:
                 print(f'epoch: {epoch}')
                 y_pred = self.sigmoide(np.dot(x, theta))
                 print(f'loss: {self.logloss(y, y_pred)}')
-                y_class = [1 if i > 0.5 else 0 for i in y_pred]
+                y_class = [1 if i > 0.6 else 0 for i in y_pred]
                 # print('y_class:', y_class)
                 accuracy = sum(y_class == y) / len(y)
                 # print('sum:', sum(y_class == y), 'len:', len(y))
