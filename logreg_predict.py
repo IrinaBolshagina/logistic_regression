@@ -27,41 +27,34 @@ if __name__ == "__main__":
     y_pred = pd.DataFrame(columns = houses)
 
     for house in houses:
-        print('\n', house, '\n')
-        print(theta[house].to_list())
         y_pred[house] = model.predict_prob(X, theta[house].to_list())
 
-
     pred = y_pred.idxmax(axis=1)
-    pd.set_option('display.max_rows', None)
-    print(y_pred)
-    #create new columnt with sum of 1s
     y_pred['sum'] = y_pred.sum(axis=1)
-    #print(y_pred)
-    print(pred)
+    
+    predictions = pd.DataFrame(columns = ['Index','Hogwarts House'])
+    predictions['Hogwarts House'] = pred
+    predictions['Index'] = pd.Series(range(len(predictions)))
+
+
+    # write the result to a csv file
+    file_res = "datasets/predictions.csv"
+    predictions.to_csv(file_res, index=False)
+
+    print("Result in file:", file_res)
 
 
     # For testing with X_test and y_test
-    '''
-    X_test = pd.read_csv("X_test.csv")
-    y_test = pd.read_csv("y_test.csv")
+    X_test = pd.read_csv("datasets/X_test.csv")
+    y_test = pd.read_csv("datasets/y_test.csv")
     y_test = y_test.iloc[:, 0]
-    print(y_test)
-    
+
     y_pred = pd.DataFrame(columns = houses)
 
     for house in houses:
-        print('\n', house, '\n')
-        print(theta[house].to_list())
         y_pred[house] = model.predict_prob(X_test, theta[house].to_list())
 
     pred = y_pred.idxmax(axis=1)
-    pd.set_option('display.max_rows', None)
-    print(y_pred)
-    #create new columnt with sum of 1s
-    # y_pred['sum'] = y_pred.sum(axis=1)
-    #print(y_pred)
-    print(pred)
+
     accuracy = sum(pred == y_test) / len(y_test)
-    print(accuracy)
-    '''
+    print("Accuracy:", accuracy)

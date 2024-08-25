@@ -53,46 +53,11 @@ class LogisticRegression:
                 print('theta:', theta)
                 print()
         return theta
-    
-    # stochastic gradient descent for one sample
-    def stochastic_gradient(self, x, yi, theta):
-        y_pred = self.sigmoide(np.dot(x, theta))
-        grad = np.dot(x, (y_pred - yi))
-        return grad
-    
-    def stochastic_train(self, x, y):
-        pd.concat([pd.Series([1])], x)
-        theta = np.zeros(len(x))
-        for epoch in range(self.epochs):
-            theta_tmp = self.learning_rate * self.gradient(x, y, theta)
-            theta = theta - theta_tmp
-            if np.linalg.norm(theta) < 1e-5:
-                break
-
-            if epoch % 1000 == 0:
-                print(f'epoch: {epoch}')
-                y_pred = self.sigmoide(np.dot(x, theta))
-                print(f'loss: {self.logloss(y, y_pred)}')
-                y_class = [1 if i > 0.6 else 0 for i in y_pred]
-                # print('y_class:', y_class)
-                accuracy = sum(y_class == y) / len(y)
-                # print('sum:', sum(y_class == y), 'len:', len(y))
-                print(f'accuracy: {accuracy}')
-                print('theta:', theta)
-                print()
-
-        return theta
-
 
     # predict the probability of the input being in class 1
     def predict_prob(self, X, theta):
         X = self.add_ones(X)  # Add this line to update X with the column of ones
         return self.sigmoide(np.dot(X, theta))
-
-    # Write thetas to a file
-    def write_thetas(self, file_name, theta):
-        with open(file_name, 'w') as f:
-            f.write(','.join(map(str, theta)))
 
     def predict_class(self, X, theta):
         y_pred = self.predict_prob(X)

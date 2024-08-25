@@ -1,8 +1,6 @@
-import pandas as pd
-from describe import ft_min, ft_max
-
 '''
-To prepare the dataset, we need to:
+This file is used to prepare the dataset for the machine learning model
+
 1) Extract numerical features
 2) Delete not numeric features
 3) Check for duplicates
@@ -10,6 +8,9 @@ To prepare the dataset, we need to:
 5) Delete rows with nan values
 6) Normalize the data to bring all the values to the same scale (0-1)
 '''
+
+import pandas as pd
+from describe import ft_min, ft_max
 
 # Normalize one value to the range 0-1
 def normalize(lst, x):
@@ -41,11 +42,9 @@ def prepare_dataset(df):
 
     # Delete features that are not useful
     df = df.drop(columns = ["Feature 1", "Feature 4", "Feature 11"])
-    # df = df[['House', 'Feature 5', 'Feature 12',]]
 
     # remove nan values from everywhere but the house column
     df = df.dropna(subset=df.columns[1:])
-    # df = df.dropna()
     
     # Normalize only the features
     df = pd.concat([df["House"], normalize_dataset(df.drop(columns=["House"]))], axis=1)

@@ -1,24 +1,25 @@
+'''
+usage: python3 describe.py <dataset>
+example: python3 describe.py datasets/dataset_train.csv
+
+
+describe.py is a program that computes the following statistics for each feature in the dataset:
+- count - number of non-NA/null observations
+- mean - average value of the dataset
+- standard deviation - shows how much variation from the mean exists
+- minimum value 
+- 25th percentile - value below which 25% of the observations fall
+- 50th percentile - median value of the dataset - value below which 50% of the observations fall
+- 75th percentile - value below which 75% of the observations fall
+- maximum value 
+Bonus features:
+- Unique Count - number of unique values in a dataset
+- Mode - most frequent value in a dataset
+- Range - difference between the maximum and minimum values
+'''
+
 import pandas as pd
 import sys
-# descruibe.py is a program that computes the following statistics for each feature in the dataset:
-# - count - number of non-NA/null observations
-# - mean - average value of the dataset
-# - standard deviation - shows how much variation from the mean exists
-# - minimum value 
-# - 25th percentile - value below which 25% of the observations fall
-# - 50th percentile - median value of the dataset - value below which 50% of the observations fall
-# - 75th percentile - value below which 75% of the observations fall
-# - maximum value 
-# Bonus features:
-# - Duplicate Count - number of duplicate values in a dataset
-# - Z-score - measure of how many standard deviations an element is from the mean - to check for outliers
-# - Unique Count - number of unique values in a dataset
-# - Mode - most frequent value in a dataset
-# - Skewness - measure of the asymmetry of the probability distribution of a real-valued random variable about its mean
-# - Range - difference between the maximum and minimum values
-
-# The program should be run as follows:
-# python describe.py datasets/dataset_train.csv
 
 
 # Remove NaN and not numeric values
@@ -84,10 +85,24 @@ def ft_75(lst):
     return ft_percentile(lst, 0.75)
 
 
+# Unique values in the list
+def ft_unique(lst):
+    return len(set(lst))
+
+# mode - most frequent value in the list
+def ft_mode(lst):
+    return max(set(lst), key = lst.count)
+
+# Range - difference between the maximum and minimum values
+def ft_range(lst):
+    return ft_max(lst) - ft_min(lst)
+
+
 # Create dataframe with describe values
 def describe(features):
     funcs = [{"count": ft_count}, {"mean": ft_mean}, {"std": ft_std}, {"min": ft_min}, 
-             {"25%": ft_25}, {"50%": ft_50}, {"75%": ft_75}, {"max": ft_max}]
+             {"25%": ft_25}, {"50%": ft_50}, {"75%": ft_75}, {"max": ft_max},
+             {"unique": ft_unique}, {"mode": ft_mode}, {"range": ft_range}]
     describe = pd.DataFrame()
     for i in range(len(features.columns)):
         col = clean_nan(features.iloc[:,i].tolist())
@@ -95,6 +110,7 @@ def describe(features):
             for key, value in func.items():
                 describe.loc[key, features.columns[i]] = value(col)
     return describe
+
 
 if __name__ == '__main__':
     dataset = sys.argv[1]
@@ -108,6 +124,3 @@ if __name__ == '__main__':
     pd.set_option('display.max_rows', None)
     print(describe(features))
     
-    # to check with pandas describe function
-    # print(features.describe()) 
-
