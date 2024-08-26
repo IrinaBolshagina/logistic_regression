@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-class Mini_batch_logreg:
+class LogisticRegression:
 
     def __init__(self, learning_rate=0.01, epochs=5000, theta=None):
         self.learning_rate = learning_rate
@@ -24,18 +24,37 @@ class Mini_batch_logreg:
         return -1 / len(y) * sum(logloss1 + logloss0)
 
     # gradient descent
-    def mini_batch_gradient(self, _Xt, yt, theta):
+    def gradient(self, _Xt, yt, theta):
         y_pred = self.sigmoide(np.dot(_Xt, theta))
         grad = np.dot(_Xt.T, (y_pred - yt)) / len(yt)
         return grad
 
-    # def mini_batch_gradient(self, X, y, theta):
-    #     y_pred = self.sigmoide(np.dot(X, theta))
-    #     grad = np.dot(X.T, (y_pred - y)) / len(y)
-    #     return grad
+    def train(self, X, y):
+        X = self.add_ones(X)  # Add this line to update X with the column of ones
+        theta = np.zeros(X.shape[1])
+        for epoch in range(self.epochs):
+            theta_tmp = self.learning_rate * self.gradient(X, y, theta)
+            # shift to the negative side of the gradient
+            theta = theta - theta_tmp
+            # stop if the change is too small
+            if np.linalg.norm(theta) < 1e-5:
+                break
+            # visualization of the loss function
+            if epoch % 1000 == 0:
+                print(f'epoch: {epoch}')
+                y_pred = self.sigmoide(np.dot(X, theta))
+                print(f'loss: {self.logloss(y, y_pred)}')
+                y_class = [1 if i > 0.5 else 0 for i in y_pred]
+                # print('y_class:', y_class)
+                accuracy = sum(y_class == y) / len(y)
+                # print('sum:', sum(y_class == y), 'len:', len(y))
+                print(f'accuracy: {accuracy}')
+                print('theta:', theta)
+                print()
+        return theta
 
     # train the model
-    def mini_batch_train(self, X, y, len_of_batch):
+    def batch_train(self, X, y, len_of_batch):
         print( "batch = ", len_of_batch)
         X = self.add_ones(X)  # Add this line to update X with the column of ones
         datalist = []
@@ -61,7 +80,7 @@ class Mini_batch_logreg:
             yt = y[start_batch:end_batch]
             # print('shape y', yt.shape)
 
-            theta_tmp = self.learning_rate * self.mini_batch_gradient(_Xt, yt, theta)
+            theta_tmp = self.learning_rate * self.gradient(_Xt, yt, theta)
             # shift to the negative side of the gradient
             theta = theta - theta_tmp
             # stop if the change is too small

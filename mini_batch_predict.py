@@ -36,14 +36,14 @@ if __name__ == "__main__":
     predictions['Index'] = pd.Series(range(len(predictions)))
 
     # write the result to a csv file
-    file_res = "datasets/predictions.csv"
+    file_res = "datasets/houses.csv"
     predictions.to_csv(file_res, index=False)
 
     print("Result in file:", file_res)
 
     # For testing with X_test and y_test
-    X_test = pd.read_csv("datasets/X_test.csv")
-    y_test = pd.read_csv("datasets/y_test.csv")
+    X_test = pd.read_csv("X_test.csv")
+    y_test = pd.read_csv("y_test.csv")
     y_test = y_test.iloc[:, 0]
 
     y_pred = pd.DataFrame(columns=houses)
