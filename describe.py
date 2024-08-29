@@ -48,6 +48,8 @@ def ft_min(lst):
 
 # Mean value of the list
 def ft_mean(lst):
+    if len(lst) == 0:
+        return 0
     lst = clean_nan(lst)
     sum_lst = 0
     for i in lst:

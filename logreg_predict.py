@@ -31,6 +31,7 @@ if __name__ == "__main__":
 
     pred = y_pred.idxmax(axis=1)
     y_pred['sum'] = y_pred.sum(axis=1)
+
     
     predictions = pd.DataFrame(columns = ['Index','Hogwarts House'])
     predictions['Hogwarts House'] = pred
@@ -45,16 +46,22 @@ if __name__ == "__main__":
 
 
     # For testing with X_test and y_test
-    X_test = pd.read_csv("datasets/X_test.csv")
-    y_test = pd.read_csv("datasets/y_test.csv")
-    y_test = y_test.iloc[:, 0]
 
-    y_pred = pd.DataFrame(columns = houses)
+    # X_test = pd.read_csv("datasets/X_test.csv")
+    # y_test = pd.read_csv("datasets/y_test.csv")
+    # y_test = y_test.iloc[:, 0]
 
-    for house in houses:
-        y_pred[house] = model.predict_prob(X_test, theta[house].to_list())
+    # y_test = pd.read_csv("datasets/dataset_truth.csv")
+    # X_test = X
 
-    pred = y_pred.idxmax(axis=1)
 
-    accuracy = sum(pred == y_test) / len(y_test)
-    print("Accuracy:", accuracy)
+    # y_pred = pred
+
+    # for house in houses:
+    #     y_pred[house] = model.predict_prob(X_test, theta[house].to_list())
+
+    # pred = predictions.drop(columns = ['Index'])
+    # print (pred)
+
+    # accuracy = sum(pred == y_test) / len(y_test)
+    # print("Accuracy:", accuracy)

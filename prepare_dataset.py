@@ -10,7 +10,7 @@ This file is used to prepare the dataset for the machine learning model
 '''
 
 import pandas as pd
-from describe import ft_min, ft_max
+from describe import ft_min, ft_max, ft_mean
 
 # Normalize one value to the range 0-1
 def normalize(lst, x):
@@ -22,6 +22,14 @@ def normalize_dataset(df):
         col = df[column].tolist()
         col_norm = [normalize(col, x) for x in col]
         df.loc[:, column] = col_norm
+    return df
+
+# Replace nan values with the mean of the column
+def replace_nan(df):
+    for column in df.columns:
+        col = df[column].tolist()
+        new_col = [ft_mean(col) if x!= x else x for x in col]
+        df.loc[:, column] = new_col
     return df
 
 # set the y values to 1 for the house we are predicting and 0 for the rest 3 houses
@@ -36,17 +44,16 @@ def prepare_dataset(df):
     df = df.drop(columns=["Index", "First Name", "Last Name", "Birthday", "Best Hand"])
     labels = ["House"] + ["Feature " + str(i+1) for i in range(len(df.columns) - 1)]
     df.columns = labels
-    
-    # Check for duplicates
-    df = df.drop_duplicates()
 
     # Delete features that are not useful
     df = df.drop(columns = ["Feature 1", "Feature 4", "Feature 11"])
 
-    # remove nan values from everywhere but the house column
-    df = df.dropna(subset=df.columns[1:])
+    # replace nan values with the mean of the column
+    df = pd.concat([df["House"], replace_nan(df.drop(columns=["House"]))], axis=1)
     
     # Normalize only the features
     df = pd.concat([df["House"], normalize_dataset(df.drop(columns=["House"]))], axis=1)
+
+    print(df.shape)
 
     return df

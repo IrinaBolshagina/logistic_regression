@@ -42,7 +42,7 @@ if __name__ == "__main__":
     
 
     # write the result to a csv file
-    file_res = "datasets/predictions.csv"
+    file_res = "datasets/houses.csv"
     predictions.to_csv(file_res, index=False)
 
     print("Result in file:", file_res)
