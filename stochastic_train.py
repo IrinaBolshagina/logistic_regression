@@ -48,5 +48,7 @@ if __name__ == "__main__":
         print('\n', house, '\n')
         y_house = set_y(y_train, house)
         thetas = model.stochastic_train(X_train, y_house)
-        print(thetas)
         write_thetas(thetas, house, file)
+    
+    print(thetas)
+

@@ -23,7 +23,6 @@ class StochasticLogReg:
         logloss0 = (1 - y) * np.log(1 - y_pred + epsilon)
         return -1 * (logloss1 + logloss0)
 
-
     # stochastic gradient descent for one sample
     def stochastic_gradient(self, x, yi, theta):
         y_pred = self.sigmoide(np.dot(x, theta))
