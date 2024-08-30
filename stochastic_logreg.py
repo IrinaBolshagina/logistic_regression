@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class StochasticLogReg:
 
-    def __init__(self, learning_rate=0.01, epochs=5000, theta = None):
+    def __init__(self, learning_rate=0.001, epochs=2000, theta = None):
         self.learning_rate = learning_rate
         self.epochs = epochs
 
@@ -34,6 +35,10 @@ class StochasticLogReg:
         y = y.to_numpy()
         X = self.add_ones(X)
         theta = np.zeros(X.shape[1])
+
+        pic_cost = []
+        pic_epoch = []#list[range(self.epochs)]
+
         for epoch in range(self.epochs):
             i = np.random.randint(len(y))
             x = X[i]
@@ -43,6 +48,13 @@ class StochasticLogReg:
             if np.linalg.norm(theta) < 1e-5:
                 break
             
+            #dasha_______________
+            y_pr = self.sigmoide(np.dot(x, theta))
+            aaa = self.stochastic_logloss(yi, y_pr)
+            pic_cost.append(aaa)
+            pic_epoch.append(epoch)
+            #dasha________________
+
             if epoch % 1000 == 0:
                 print(f'epoch: {epoch}')
                 y_pred = self.sigmoide(np.dot(x, theta))
@@ -51,6 +63,14 @@ class StochasticLogReg:
                 print('theta:', theta)
                 print()
 
+        #dasha_______________
+        fig, ax = plt.subplots()
+        ax.plot(pic_epoch, pic_cost)
+        plt.xlabel("epochs")
+        plt.ylabel("logloss")
+        plt.show()
+        #dasha____________
+        
         return theta
 
 
