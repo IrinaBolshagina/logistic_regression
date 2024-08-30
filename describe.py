@@ -103,6 +103,17 @@ def ft_range(lst):
 # Create dataframe with describe values
 def describe(features):
     funcs = [{"count": ft_count}, {"mean": ft_mean}, {"std": ft_std}, {"min": ft_min}, 
+             {"25%": ft_25}, {"50%": ft_50}, {"75%": ft_75}, {"max": ft_max}]
+    describe = pd.DataFrame()
+    for i in range(len(features.columns)):
+        col = clean_nan(features.iloc[:,i].tolist())
+        for func in funcs:
+            for key, value in func.items():
+                describe.loc[key, features.columns[i]] = value(col)
+    return describe
+
+def describe_bonus(features):
+    funcs = [{"count": ft_count}, {"mean": ft_mean}, {"std": ft_std}, {"min": ft_min}, 
              {"25%": ft_25}, {"50%": ft_50}, {"75%": ft_75}, {"max": ft_max},
              {"unique": ft_unique}, {"mode": ft_mode}, {"range": ft_range}]
     describe = pd.DataFrame()
@@ -115,7 +126,14 @@ def describe(features):
 
 
 if __name__ == '__main__':
+
+    if len(sys.argv) < 2 or len(sys.argv) > 4:
+        print("Usage: python3 describe.py <dataset> <bonus>")
+        sys.exit(1)
+
     dataset = sys.argv[1]
+    is_bonus = sys.argv[2] if len(sys.argv) > 2 else False
+
     df = pd.read_csv(dataset)
     features = df[["Arithmancy", "Astronomy", "Herbology", "Defense Against the Dark Arts", 
                    "Divination", "Muggle Studies", "Ancient Runes", "History of Magic", 
@@ -124,5 +142,9 @@ if __name__ == '__main__':
     features.columns = labels
     
     pd.set_option('display.max_rows', None)
-    print(describe(features))
+
+    if is_bonus:
+        print(describe_bonus(features))
+    else:
+        print(describe(features))
     

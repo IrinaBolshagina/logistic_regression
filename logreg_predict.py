@@ -1,3 +1,8 @@
+'''
+Usage: python3 logreg_predict.py <dataset> <theta>
+Example: python3 logreg_predict.py datasets/dataset_test.csv datasets/thetas.csv
+'''
+
 from logistic_regression import LogisticRegression
 from prepare_dataset import prepare_dataset
 from sklearn.model_selection import train_test_split
@@ -7,6 +12,11 @@ import sys
 
 
 if __name__ == "__main__":
+
+    # Check the number of arguments
+    if len(sys.argv) != 3:
+        print("Usage: python3 logreg_predict.py <dataset> <theta>")
+        sys.exit(1)
     
     # Read test dataset, prepare it
     dataset = sys.argv[1]
@@ -39,7 +49,7 @@ if __name__ == "__main__":
 
 
     # write the result to a csv file
-    file_res = "datasets/predictions.csv"
+    file_res = "datasets/houses.csv"
     predictions.to_csv(file_res, index=False)
 
     print("Result in file:", file_res)
@@ -53,7 +63,6 @@ if __name__ == "__main__":
 
     # y_test = pd.read_csv("datasets/dataset_truth.csv")
     # X_test = X
-
 
     # y_pred = pred
 

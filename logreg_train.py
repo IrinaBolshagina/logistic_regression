@@ -1,10 +1,10 @@
 '''
-usage: python3 logreg_train.py <path_to_dataset> <path_to_theta_file>
-example: python3 logreg_train.py datasets/dataset_train.csv datasets/thetas.csv
+usage: python3 logreg_train.py <path_to_dataset> <batch_size>
+example: python3 logreg_train.py datasets/dataset_train.csv datasets/thetas.csv 1
 '''
-
 from logistic_regression import LogisticRegression
-from sklearn.model_selection import train_test_split
+from logistic_batch_stoch import LogisticRegression_bach
+from stochastic_logreg import StochasticLogReg
 from prepare_dataset import prepare_dataset, set_y
 import pandas as pd
 import numpy as np
@@ -25,25 +25,50 @@ def write_thetas(thetas, house, file):
     
 if __name__ == "__main__":
 
+    # Check the number of arguments
+    if len(sys.argv) < 2 or len(sys.argv) > 4 or (len(sys.argv) == 3 and not sys.argv[2].isdigit()):
+        print("Usage: python3 logreg_train.py <dataset> <batch_size>")
+        sys.exit(1)
+
+    # Read the dataset
     dataset = sys.argv[1]
     df = pd.read_csv(dataset)
     df = prepare_dataset(df)
     houses = df["House"].unique()
 
+    # Split the dataset into X and y
     X = df.iloc[:, 1:]
     y = df.iloc[:, 0]
 
-    model = LogisticRegression()
+    # Define the model for usual, stochastic or mini-batch gradient descent
+    
+    batch_size = int(sys.argv[2]) if len(sys.argv) == 3 else len(y)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y)
-    X_test.to_csv("datasets/X_test.csv", index=False)
-    y_test.to_csv("datasets/y_test.csv", index=False)
+    print("batch_size: ", batch_size)
 
+    if batch_size == len(y):
+        print('Gradient descent on the whole dataset')
+        model = LogisticRegression()
+        
+    elif batch_size == 1:
+        print('Stochastic gradient descent')
+        model = StochasticLogReg()
+    
+    elif batch_size < len(y):
+        print('Mini-batch gradient descent')
+        model = LogisticRegression_bach(0.01, 1000, batch_size=batch_size)
+    
+    else:
+        print('Enter a batch size less than the number of samples in the dataset')
+        sys.exit(1)
 
+    # Create a csv file to store thetas
     file = "datasets/thetas.csv"
     create_theta_file(houses, file)
+
+    # Train the model for each house and write thetas to the file
     for house in houses:
         print('\n', house, '\n')
-        y_house = set_y(y_train, house)
-        thetas = model.train(X_train, y_house)
+        y_house = set_y(y, house)
+        thetas = model.train(X, y_house)
         write_thetas(thetas, house, file)

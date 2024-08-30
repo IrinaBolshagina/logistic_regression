@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 class StochasticLogReg:
 
-    def __init__(self, learning_rate=0.001, epochs=2000, theta = None):
+    def __init__(self, learning_rate=0.01, epochs=100, theta = None):
         self.learning_rate = learning_rate
         self.epochs = epochs
 
@@ -30,7 +30,7 @@ class StochasticLogReg:
         grad = (y_pred - yi) * x
         return grad
     
-    def stochastic_train(self, X, y):
+    def train(self, X, y):
         X = X.to_numpy()
         y = y.to_numpy()
         X = self.add_ones(X)
@@ -40,13 +40,14 @@ class StochasticLogReg:
         pic_epoch = []#list[range(self.epochs)]
 
         for epoch in range(self.epochs):
-            i = np.random.randint(len(y))
-            x = X[i]
-            yi = y[i]
-            gradient = self.stochastic_gradient(x, yi, theta)
-            theta -= gradient * self.learning_rate
-            if np.linalg.norm(theta) < 1e-5:
-                break
+            for i in range(len(y)):
+                j = np.random.randint(len(y))
+                x = X[j]
+                yi = y[j]
+                gradient = self.stochastic_gradient(x, yi, theta)
+                theta -= gradient * self.learning_rate
+                if np.linalg.norm(theta) < 1e-5:
+                    break
             
             #dasha_______________
             y_pr = self.sigmoide(np.dot(x, theta))
@@ -55,7 +56,7 @@ class StochasticLogReg:
             pic_epoch.append(epoch)
             #dasha________________
 
-            if epoch % 1000 == 0:
+            if epoch % 10 == 0:
                 print(f'epoch: {epoch}')
                 y_pred = self.sigmoide(np.dot(x, theta))
                 print(1 if y_pred > 0.5 else 0)

@@ -7,6 +7,7 @@ import sys
 sys.path.append('../prepare_dataset.py')
 from prepare_dataset import prepare_dataset, set_y
 from stochastic_logreg import StochasticLogReg
+from logistic_batch_stoch import LogisticRegression
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
@@ -35,19 +36,17 @@ if __name__ == "__main__":
     X = df.iloc[:, 1:]
     y = df.iloc[:, 0]
 
-    model = StochasticLogReg()
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y)
-    X_test.to_csv("datasets/X_test.csv", index=False)
-    y_test.to_csv("datasets/y_test.csv", index=False)
+    # model = StochasticLogReg()
+    model = LogisticRegression()
 
 
     file = "datasets/thetas_stochastic.csv"
     create_theta_file(houses, file)
     for house in houses:
         print('\n', house, '\n')
-        y_house = set_y(y_train, house)
-        thetas = model.stochastic_train(X_train, y_house)
+        y_house = set_y(y, house)
+        # thetas = model.stochastic_train(X, y_house)
+        thetas = model.train(X, y_house)
         write_thetas(thetas, house, file)
     
     print(thetas)
